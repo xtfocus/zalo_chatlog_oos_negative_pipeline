@@ -1,9 +1,13 @@
-# Zalo Chatlog: Feature engineering pipeline
+# Zalo Chatlog: Feature engineering + prediction pipeline for out-of-stock and negative
 
-## Features
 
-* Remove errorneous rows, recognize automated and typed response
-- Run arguments allow for flexibility
+## Usage
+
+1. Copy the chatlog data to data/01_raw/chatlog.parquet
+
+2. Contact me for models
+
+3. kedro run
 
 ## Some Business domain knowledge
 
@@ -70,4 +74,5 @@ Each message can be categorized further as follows:
           |---- phone number
           |---- other text (depends on the actual conversation)
 ```
+
 
