@@ -135,24 +135,17 @@ def categorize_organic_sessions(
     chatlog = chatlog[chatlog["is_organic"]].reset_index(drop=True)
 
     # readable_event is the organic text or the classified event
+
+    url_pattern = r"(https?://(?:www\.)?[\w.-]+(?:\.[\w.-]+)+(?:[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?|www\.[\w.-]+(?:\.[\w.-]+)+|[\w.-]+\.[a-z]{2,6})"
+
     chatlog["readable_event"] = chatlog.apply(
         lambda x: (
             json.loads(x["message"])["content"]["text"]
             if x["event"] in ("cus_text_other", "agent_text_other")
-            else x["event"]
-        ),
-        axis=1,
-    )
-
-    # WE ALSO WANT THE IMAGE URL for the cv task
-    chatlog["readable_event"] = chatlog.apply(
-        lambda x: (
-            json.loads(json.loads(x["message"])["content"])["url"]
-            if x["event"] == "cus_file"
             else (
-                json.loads(x["message"])["content"]["url"]
-                if x["event"] == "agent_file"
-                else x["readable_event"]
+                re.findall(url_pattern, str(x["message"]))[0]
+                if x["event"] in ("cus_file", "agent_file")
+                else x["event"]
             )
         ),
         axis=1,

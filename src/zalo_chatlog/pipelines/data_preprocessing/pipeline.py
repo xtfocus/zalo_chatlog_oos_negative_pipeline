@@ -13,6 +13,7 @@ from .nodes import (
     classify_customer_payload,
     create_request_success_feature,
     json_drop_message,
+    query_table,
     remove_negative_status,
     sorting_chatlog_by_time,
 )
@@ -20,6 +21,12 @@ from .nodes import (
 
 def define_preprocessing_nodes():
     return [
+        node(
+            func=query_table,
+            inputs=["params:chatlog.source", "params:day_request"],
+            outputs="chatlog",
+            name="get.daily.chatlog",
+        ),
         node(
             func=json_drop_message,
             inputs=["chatlog"],

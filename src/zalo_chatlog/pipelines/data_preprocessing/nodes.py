@@ -5,8 +5,12 @@ generated using Kedro 0.18.14
 
 import json
 import logging
+from pathlib import Path
 from typing import Dict, List
 
+import pandas as pd
+from kedro.config import OmegaConfigLoader
+from kedro.framework.project import settings
 from numpy import nan as null
 from pandas import DataFrame
 from tqdm import tqdm
@@ -21,9 +25,61 @@ from .classify_customer_message import (
     categorize_customer_message_row,
     categorize_customer_payload_row,
 )
+from .data_connector import construct_engine
+
+# Substitute <project_root> with the [root folder for your project](https://docs.kedro.org/en/stable/tutorial/spaceflights_tutorial.html#terminology)
+CONF_PATH = str(Path(".") / settings.CONF_SOURCE)
+CONF_LOADER = OmegaConfigLoader(conf_source=CONF_PATH, env="local")
+CREDENTIALS = CONF_LOADER["credentials"]
+
+ENGINES = {
+    cred_type: construct_engine(CREDENTIALS[cred_type]) for cred_type in CREDENTIALS
+}
+
 
 logger = logging.getLogger(__name__)
 tqdm.pandas()
+
+
+# def download_new_chatlog(date: str):
+
+
+def read_query_from_path(path: Path) -> str:
+    with open(path, "r") as h:
+        content = h.read()
+    return content
+
+
+def query_table(params: Dict, day_request: str) -> DataFrame:
+    """
+    Query table defined in params (which contains a query) from LC's azr prod server
+    Parameters
+    ----------
+    azr_queries: the query
+    credential_dict: server, database, username, password
+
+    Return
+    ------
+    DataFrame
+    """
+
+    for column in ["cred_type", "query_filepath"]:
+        try:
+            assert column in params
+        except AssertionError as missing_column:
+            message = f"Column {column} not found"
+            raise ValueError(message) from missing_column
+
+    query = read_query_from_path(Path(params["query_filepath"])).format(
+        day_request=day_request
+    )
+    cred_type = params["cred_type"]
+    engine = ENGINES[cred_type]
+
+    logger.info(f"Executing {cred_type}:{query}")
+    result = pd.read_sql(query, engine)
+    logger.info(f"N_rows = {result.shape[0]}")
+    return result
 
 
 def json_drop_message(chatlog_df: DataFrame):
