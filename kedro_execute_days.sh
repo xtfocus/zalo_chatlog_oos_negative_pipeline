@@ -12,8 +12,10 @@ mkdir kedro_output
 while IFS= read -r date; do
     export DAY_REQUEST="$date"
     echo "DAY_REQUEST=\"$DAY_REQUEST\" has been set"
+
+    output_dir=kedro_output/output_${date}
+    mkdir ${output_dir}
     kedro run
-    mkdir kedro_output/output_${date}.txt
-    mv data/08_model_output/* kedro_output/output
+    mv data/08_model_output/* ${output_dir}
 done < dates.txt
 
