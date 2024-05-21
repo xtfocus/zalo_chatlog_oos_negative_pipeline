@@ -23,7 +23,7 @@ def define_preprocessing_nodes():
     return [
         node(
             func=query_table,
-            inputs=["params:chatlog.source", "params:day_request"],
+            inputs=["params:chatlog.source"],
             outputs="chatlog",
             name="get.daily.chatlog",
         ),

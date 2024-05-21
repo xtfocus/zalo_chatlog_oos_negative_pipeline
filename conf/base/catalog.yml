@@ -62,10 +62,6 @@ chatlog.organic.refined:
   type: pandas.ParquetDataset
   filepath: data/01_raw/chatlog_organic_refined.parquet
 
-chatlog.organic.intent:
-  type: pandas.ParquetDataset
-  filepath: data/01_raw/chatlog_organic_intent.parquet
-
 oos.model:
   type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
   dataset:

@@ -5,6 +5,7 @@ generated using Kedro 0.18.14
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Dict, List
 
@@ -26,6 +27,8 @@ from .classify_customer_message import (
     categorize_customer_payload_row,
 )
 from .data_connector import construct_engine
+
+DAY_REQUEST = os.environ["DAY_REQUEST"]
 
 # Substitute <project_root> with the [root folder for your project](https://docs.kedro.org/en/stable/tutorial/spaceflights_tutorial.html#terminology)
 CONF_PATH = str(Path(".") / settings.CONF_SOURCE)
@@ -50,7 +53,7 @@ def read_query_from_path(path: Path) -> str:
     return content
 
 
-def query_table(params: Dict, day_request: str) -> DataFrame:
+def query_table(params: Dict) -> DataFrame:
     """
     Query table defined in params (which contains a query) from LC's azr prod server
     Parameters
@@ -71,7 +74,7 @@ def query_table(params: Dict, day_request: str) -> DataFrame:
             raise ValueError(message) from missing_column
 
     query = read_query_from_path(Path(params["query_filepath"])).format(
-        day_request=day_request
+        day_request=DAY_REQUEST
     )
     cred_type = params["cred_type"]
     engine = ENGINES[cred_type]

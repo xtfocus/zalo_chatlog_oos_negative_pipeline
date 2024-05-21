@@ -7,7 +7,14 @@
 
 2. Contact me for models
 
-3. kedro run
+3. Execute the whole pipeline for each day in a date range of your choice
+
+```bash
+# Example: execute for dates from 2024-02-12 to 2024-02-13
+./get_dates.sh 2024-02-12 2024-02-13 | ./kedro_execute_days.sh 
+```
+
+Prediction outputs will be saved to `kedro_output`
 
 ## Some Business domain knowledge
 
