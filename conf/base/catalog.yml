@@ -76,7 +76,6 @@ oos.prediction:
   type: pandas.ParquetDataset
   filepath: data/08_model_output/chatlog_oos.parquet
 
-
 negative.model:
   type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
   dataset:

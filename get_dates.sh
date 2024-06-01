@@ -22,8 +22,8 @@ start_date_seconds=$(date -d "$start_date" +%s)
 end_date_seconds=$(date -d "$end_date" +%s)
 
 # Validate that end_date is greater than start_date
-if [ "$end_date_seconds" -le "$start_date_seconds" ]; then
-    echo "Error: end_date must be later than start_date"
+if [ "$end_date_seconds" -lt "$start_date_seconds" ]; then
+    echo "Error: end_date must be later than or equal to start_date"
     exit 1
 fi
 

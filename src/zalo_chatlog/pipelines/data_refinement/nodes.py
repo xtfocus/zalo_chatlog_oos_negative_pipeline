@@ -151,6 +151,13 @@ def categorize_organic_sessions(
         axis=1,
     )
 
+    try:
+        assert len(chatlog) > 0
+    except AssertionError:
+        message = "No organic session found."
+        logger.error(message)
+        raise ValueError(message)
+
     return chatlog
 
 

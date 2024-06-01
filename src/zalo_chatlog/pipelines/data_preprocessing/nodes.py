@@ -12,7 +12,6 @@ from typing import Dict, List
 import pandas as pd
 from kedro.config import OmegaConfigLoader
 from kedro.framework.project import settings
-from numpy import nan as null
 from pandas import DataFrame
 from tqdm import tqdm
 
@@ -27,6 +26,9 @@ from .classify_customer_message import (
     categorize_customer_payload_row,
 )
 from .data_connector import construct_engine
+
+null = None
+
 
 DAY_REQUEST = os.environ["DAY_REQUEST"]
 
@@ -82,6 +84,12 @@ def query_table(params: Dict) -> DataFrame:
     logger.info(f"Executing {cred_type}:{query}")
     result = pd.read_sql(query, engine)
     logger.info(f"N_rows = {result.shape[0]}")
+
+    if len(result) == 0:
+        message = f"No row found for {DAY_REQUEST}"
+        logger.error(message)
+        raise ValueError(message)
+
     return result
 
 
@@ -92,15 +100,23 @@ def json_drop_message(chatlog_df: DataFrame):
     """
 
     # We don't use these columns
-    chatlog_df = chatlog_df.drop(
+    to_drop = (
         [
             "id",
             "app_code",
             "live_support_log_id",
             "_id",
         ],
-        axis=1,
     )
+
+    for col in to_drop:
+        try:
+            chatlog_df = chatlog_df.drop(
+                col,
+                axis=1,
+            )
+        except:
+            pass
 
     def json_loads(row):
         try:

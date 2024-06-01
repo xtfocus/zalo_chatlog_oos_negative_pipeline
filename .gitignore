@@ -165,3 +165,8 @@ mlruns/**
 stats.json
 
 dates.txt
+
+kedro_output/
+kedro_output_hist/
+
+**ipynb

@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List
 
-from numpy import nan as null
+null = None
 
 logger = logging.getLogger(__name__)
 
